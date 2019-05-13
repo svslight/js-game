@@ -355,7 +355,7 @@ class Coin extends Actor {
 
 /* Игрок. 
 Класс Player - наследует Actor - содержит базовый функционал движущегося объекта.
-*/   
+*/          
    
 class Player extends Actor {
   constructor(pos = new Vector(0, 0)) {
