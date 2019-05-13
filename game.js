@@ -22,8 +22,8 @@ const LEVEL_STATUSES = {
   LOST: 'lost',
   WON: 'won',
 }
-
-/* Вектор. 
+    
+/* Вектор.    
 Класс Vector контролирирует расположение объектов и управляет их размером и перемещением.
 */
 
@@ -126,8 +126,8 @@ class Level {
   isFinished() { 
 	return (this.status !== LEVEL_STATUSES.NULL) && (this.finishDelay < 0) ? true : false;
   }
-	
-  // Метод actorAt определяет, расположен ли другой движущийся объект в переданной позиции.
+	  
+  // Метод actorAt определяет, расположен ли другой движущийся объект в переданной позиции.	
   actorAt(actor) {  
     if (!(Actor.isActor(actor)))  {
 	  throw new Error('Объект не существует или не является объектом класса Actor')	  
