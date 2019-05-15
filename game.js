@@ -156,9 +156,9 @@ class Level {
     for (let y = borderTop; y < borderBottom; y++) {
       for (let x = borderLeft; x < borderRight; x++) {
         const gridLevel = this.grid[y][x];
-		if (gridLevel === OBSTACLE_TYPES.LAVA || gridLevel === OBSTACLE_TYPES.WALL) {	
-	  	  return gridLevel;
-	    }
+        if (gridLevel === OBSTACLE_TYPES.LAVA || gridLevel === OBSTACLE_TYPES.WALL) {	
+          return gridLevel;
+        }
       }
     }		
   }
@@ -226,13 +226,13 @@ class LevelParser {
   createActors(plan) {
     return plan.reduce((arrActors, rows, indexRow) => {		
       [...rows].forEach((symbol, indexSimbol) => {			  
-	    const constructor = this.actorFromSymbol(symbol);		  
-	    if (typeof constructor === 'function') {  
-	      const actor = new constructor(new Vector(indexSimbol, indexRow));
-	      if (Actor.isActor(actor)) {   
-	        arrActors.push(actor);
-	      }
-	    }		  
+        const constructor = this.actorFromSymbol(symbol);		  
+        if (typeof constructor === 'function') {  
+          const actor = new constructor(new Vector(indexSimbol, indexRow));
+          if (Actor.isActor(actor)) {   
+            arrActors.push(actor);
+          }
+        }		  
       });		
       return arrActors;   
     }, []); 
