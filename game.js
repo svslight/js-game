@@ -39,7 +39,7 @@ class Vector {
   
   // Метод plus создает и возвращает новый объект типа Vector, с новыми координатами.
   plus(vector) {
-    if (!(Vector.isVector(vector))) {
+    if (!Vector.isVector(vector)) {
       throw new Error(`Можно прибавлять к вектору только вектор типа Vector`);
     }
     return new Vector(this.x + vector.x, this.y + vector.y);
@@ -57,7 +57,7 @@ class Vector {
 
 class Actor {
   constructor(pos = new Vector(0, 0), size = new Vector(1, 1), speed = new Vector(0, 0)) {	
-    if (!(Vector.isVector(pos || size || speed))) {
+    if (!Vector.isVector(pos) || !Vector.isVector(size) || !Vector.isVector(speed)) {
       throw new Error('Объект не является объектом типа Vector')			
     }
     this.pos = pos;
@@ -93,7 +93,7 @@ class Actor {
 	
   // Метод isIntersect проверяет, пересекается ли текущий объект с переданным объектом.
   isIntersect(actor) {
-    if (!(Actor.isActor(actor))) {
+    if (!Actor.isActor(actor)) {
       throw new Error('Объект не существует или не является объектом класса Actor')
     }
     if (actor === this) {
@@ -124,12 +124,12 @@ class Level {
 	
   // Метод isFinished определяет, завершен ли уровень.
   isFinished() { 
-    return (this.status !== LEVEL_STATUSES.NULL) && (this.finishDelay < 0) ? true : false;
+    return this.status !== LEVEL_STATUSES.NULL && this.finishDelay < 0;
   }
 	  
   // Метод actorAt определяет, расположен ли другой движущийся объект в переданной позиции.	
   actorAt(actor) {  
-    if (!(Actor.isActor(actor)))  {
+    if (!Actor.isActor(actor))  {
       throw new Error('Объект не существует или не является объектом класса Actor')	  
     }
     return this.actors.find(obj => obj.isIntersect(actor));
@@ -137,7 +137,7 @@ class Level {
   
   // Метод obstacleAt определяет, нет ли препятствия в указанном месте.	
   obstacleAt(pos, size)  {  
-    if (!(Vector.isVector(pos || size))) {
+    if (!Vector.isVector(pos) || !Vector.isVector(size)) {
       throw new Error('Объект не существует или не является объектом класса Vector');
     }
     const borderLeft = Math.floor(pos.x);
@@ -156,9 +156,9 @@ class Level {
     for (let y = borderTop; y < borderBottom; y++) {
       for (let x = borderLeft; x < borderRight; x++) {
         const gridLevel = this.grid[y][x];
-	if (gridLevel) {
-	  return gridLevel;
-	}
+		if (gridLevel === OBSTACLE_TYPES.LAVA || gridLevel === OBSTACLE_TYPES.WALL) {	
+	  	  return gridLevel;
+	    }
       }
     }		
   }
@@ -224,17 +224,17 @@ class LevelParser {
   
   // Метод createActors принимает массив строк и преобразует его в массив движущихся объектов.
   createActors(plan) {
-    return plan.reduce((prev, currY, y) => {
-      currY.split('').forEach((currX, x) => {
-	const constructor = this.actorFromSymbol(currX);
-	if (typeof constructor === 'function') {  
-	  const actor = new constructor(new Vector(x, y));
-	  if (actor instanceof Actor) {    
-	    prev.push(actor);
-	  }
-	} 
-      });
-      return prev;   
+    return plan.reduce((arrActors, rows, indexRow) => {		
+      [...rows].forEach((symbol, indexSimbol) => {			  
+	    const constructor = this.actorFromSymbol(symbol);		  
+	    if (typeof constructor === 'function') {  
+	      const actor = new constructor(new Vector(indexSimbol, indexRow));
+	      if (Actor.isActor(actor)) {   
+	        arrActors.push(actor);
+	      }
+	    }		  
+      });		
+      return arrActors;   
     }, []); 
   }
   	
